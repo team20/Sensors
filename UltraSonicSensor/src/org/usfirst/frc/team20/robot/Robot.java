@@ -25,30 +25,30 @@ public class Robot extends IterativeRobot {
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
      */
-    CANTalon fr;
-	CANTalon br;
-	CANTalon fl;
-	CANTalon bl;
-	Joystick joy;
+    Joystick joy;
+    Joystick joy2;
 	AnalogInput sensor;
 	double vcc; 
 	AnalogInput voltage;
 	double inches;
 	double calculatedInches;
-	Sensors s = new Sensors();
+	//Sensors s = new Sensors();
+	DriveTrain d = new DriveTrain(4);
 	
 	public void robotInit() {
         chooser = new SendableChooser();
         chooser.addDefault("Default Auto", defaultAuto);
         chooser.addObject("My Auto", customAuto);
         SmartDashboard.putData("Auto choices", chooser);
-        fr = new CANTalon(9);
-    	br = new CANTalon(2);
-    	fl = new CANTalon(10);
-    	bl = new CANTalon(1);
-    	joy = new Joystick(0);
-    	sensor = new AnalogInput(3);
+        joy = new Joystick(0);
+    	//sensor = new AnalogInput(3);
     	voltage = new AnalogInput(2);
+    	joy2 = new Joystick(1);
+    	d.assignPort(0, 10);
+    	d.assignPort(1, 9);
+    	d.assignPort(2, 1);
+    	d.assignPort(3, 2);
+    	
     	
     	
     }
@@ -100,19 +100,39 @@ public class Robot extends IterativeRobot {
      * This function is called periodically during operator control
      */
     double inchesGoal = 12;
-
+    double inchesFromWall;
     public void teleopPeriodic() {
-    	System.out.println("Inches Goal:" + inchesGoal);
-    	if(joy.getRawButton(5)){
-    		inchesGoal += 6;  		
-    	}
-    	if(joy.getRawButton(4)){
-    		inchesGoal -= 6;
-    		if(inchesGoal < 12){
-    			inchesGoal = 12;
-    		}
-    	}
-    	s.goToDistance(inchesGoal);
+//    	System.out.println("Inches Goal:" + inchesGoal);
+//    	inchesFromWall = inches;
+//    	if(joy.getRawButton(5)){
+//    		inchesGoal += 6;  		
+//    	}
+//    	if(joy.getRawButton(4)){
+//    		inchesGoal -= 6;
+//    		if(inchesGoal < 12){
+//    			inchesGoal = 12;
+//    		}
+//    	}
+//		
+//		if(inchesFromWall < inchesGoal + 3 && inchesFromWall > inchesGoal - 3){	
+//    		fr.set(0);					
+//    		br.set(0);
+//    		fl.set(0);
+//    		bl.set(0);
+//    	}else if(inchesFromWall < inchesGoal + 3){
+//    		fr.set(.15);				
+//    		br.set(.15);
+//    		fl.set(-.15);
+//    		bl.set(-.15);
+//    	}else if(inchesFromWall > inchesGoal - 3){
+//    		fr.set(-.15);				
+//    		br.set(-.15);
+//    		fl.set(.15);
+//    		bl.set(.15);
+//    	}
+    	double l = joy2.getRawAxis(1);
+    	double r = joy.getRawAxis(1);
+    	d.tankDrive(l, r);
     }
     
     
@@ -120,20 +140,7 @@ public class Robot extends IterativeRobot {
     /**
      * This function is called periodically during test mode
      */
-    public void testPeriodic() {
-    	System.out.println("Voltage:" + voltage.getVoltage());
-    	if(getSensorInches() > 12){
-    		fr.set(0);
-    		fl.set(0);
-    		br.set(0);
-    		bl.set(0);
-    	}else{
-    		fr.set(-.2);
-    		fl.set(.2);
-    		br.set(-.2);
-    		bl.set(.2);
-    		
-    	}
+    public void testPeriodic(){
+    	
     }
-    
-}
+}    

@@ -19,7 +19,7 @@ public class Sensors {
 	}
 	public double getDistance(){
 		vcc = voltage.getVoltage();
-        inches = sensor.getAverageVoltage()/(vcc/512);		//takes sensor input, compares against voltage, and convert to inches
+        inches = sensor.getAverageVoltage()/(vcc/5120);		//takes sensor input, compares against voltage, and convert to inches
     	return inches;
 	}
 	public void goToDistance(double targetInches){
